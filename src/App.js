@@ -22,24 +22,19 @@ const App = () => {
             "ws://sn.chashuibiao.org/",
             null,
             {
-                debug: true,
+                debug: false,
             },
         );
         ws.current.onopen = () => console.log("ws opened");
         ws.current.onclose = () => console.log("ws closed");
+        ws.current.onmessage = e => {
+            updateHistory(prevHistory => [...new Set([e.data, ...prevHistory])]);
+        };
 
         return () => {
             ws.current.close();
         };
     }, []);
-
-    useEffect(() => {
-        if (!ws.current) return;
-
-        ws.current.onmessage = e => {
-            updateHistory([...new Set([e.data, ...history])]);
-        };
-    });
 
     return (
         <div className="typo" style={{
