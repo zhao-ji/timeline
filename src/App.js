@@ -16,6 +16,7 @@ const App = () => {
     const [contentType, changeContentType] = useState("Mandarin");
 
     const ws = useRef(null);
+    const bottomAnchor = useRef(null);
 
     useEffect(() => {
         ws.current = new ReconnectingWebSocket(
@@ -42,7 +43,13 @@ const App = () => {
             marginRight: "0.3em",
         }}>
             <History contentType={contentType} canScroll={true} history={history} />
-            <Operate contentType={contentType} changeContentType={changeContentType} wsStatus={true} />
+            <Operate
+                contentType={contentType}
+                changeContentType={changeContentType}
+                wsStatus={ws.current && ws.current.readyState === 1}
+                bottomAnchor={bottomAnchor}
+            />
+            <div ref={bottomAnchor} />
         </div>
     );
 }

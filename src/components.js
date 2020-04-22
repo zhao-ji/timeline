@@ -58,6 +58,53 @@ export const History = ({ contentType, canScroll, history }) => {
     );
 }
 
-export const Operate = ({ contentType, changeContentType, wsStatus }) => {
-    return false;
+export const Operate = ({ contentType, changeContentType, wsStatus, bottomAnchor }) => {
+    return (
+        <div style={{
+            position: "fixed",
+            height: "10em",
+            width: "2em",
+            bottom: "5em",
+            right: "3em",
+        }}>
+            <Button onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}>
+                ↑
+            </Button>
+            <Button onClick={() => changeContentType("All")} highlight={contentType === "All"}>
+                All
+            </Button>
+            <Button onClick={() => changeContentType("English")} highlight={contentType === "English"}>
+                En
+            </Button>
+            <Button onClick={() => changeContentType("Mandarin")} highlight={contentType === "Mandarin"}>
+                汉
+            </Button>
+            <Button>
+                <span style={{
+                    height: "0.7em",
+                    width: "0.7em",
+                    borderRadius: "50%",
+                    display: "inline-block",
+                    backgroundColor: wsStatus ? "teal" : "crimson",
+                }} />
+            </Button>
+            <Button onClick={() => bottomAnchor.current.scrollIntoView({ behavior: 'smooth' })}>
+                ↓
+            </Button>
+        </div>
+    );
 };
+
+const Button = ({ children, highlight, ...rest }) => (
+    <button {...rest} style={{
+        height: "20%",
+        width: "2em",
+        ...(
+            highlight
+                ? { backgroundColor: "mintcream" }
+                : {}
+        )
+    }}>
+        {children}
+    </button>
+);
