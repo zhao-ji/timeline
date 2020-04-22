@@ -85,7 +85,7 @@ export const Operate = ({ contentType, changeContentType, wsStatus, bottomAnchor
                     width: "0.7em",
                     borderRadius: "50%",
                     display: "inline-block",
-                    backgroundColor: wsStatus ? "teal" : "crimson",
+                    backgroundColor: wsStatus ? "#6abe83" : "#f1ac9d",
                 }} />
             </Button>
             <Button onClick={() => bottomAnchor.current.scrollIntoView({ behavior: 'smooth' })}>
@@ -99,11 +99,8 @@ const Button = ({ children, highlight, ...rest }) => (
     <button {...rest} style={{
         height: "20%",
         width: "2em",
-        ...(
-            highlight
-                ? { backgroundColor: "mintcream" }
-                : {}
-        )
+        webkitAppearance: "none",
+        backgroundColor: highlight ? "#6abe83" : "#dee2d1",
     }}>
         {children}
     </button>
