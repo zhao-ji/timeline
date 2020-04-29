@@ -20,7 +20,7 @@ const App = () => {
 
     useEffect(() => {
         ws.current = new ReconnectingWebSocket(
-            "ws://sn.chashuibiao.org/",
+            "wss://ws.timeline.minganci.org/",
             null,
             {
                 debug: false,
