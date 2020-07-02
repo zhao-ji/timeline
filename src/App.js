@@ -10,12 +10,15 @@ import {
     History,
     Operate,
 } from './components';
+import {filterTweet} from './utils';
 
 const App = () => {
-    const [history, updateHistory] = useState([]);
-    const [contentType, changeContentType] = useState("Mandarin");
+    const [content, setContent] = useState([]);
+    const [contentType, setContentType] = useState("Mandarin");
+    const [canUpdate, setCanUpdate] = useState(false);
 
     const ws = useRef(null);
+    const history = useRef([]);
     const bottomAnchor = useRef(null);
 
     useEffect(() => {
@@ -29,25 +32,49 @@ const App = () => {
         ws.current.onopen = () => console.log("ws opened");
         ws.current.onclose = () => console.log("ws closed");
         ws.current.onmessage = e => {
-            updateHistory(prevHistory => [...new Set([e.data, ...prevHistory])]);
+            history.current = [...new Set([e.data, ...history.current])];
+            const deservedContent = filterTweet(history.current, "Mandarin");
+            if (deservedContent.length < 30) {
+                setContent(deservedContent);
+            } else {
+                setCanUpdate(true);
+            }
         };
 
         return () => {
-            ws.current.close();
+            // ws.close(code=1000, reason)
+            ws.current.close(1000, "page refreshed or closed");
         };
-    }, []);
+    }, [setContent, setCanUpdate]);
+
+    useEffect(() => {
+        setContent(filterTweet(history.current, contentType));
+        setCanUpdate(false);
+    }, [contentType])
+
+    function jumpToTop() {
+        setContent(filterTweet(history.current, contentType));
+        setCanUpdate(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function jumpToBottom() {
+        bottomAnchor.current.scrollIntoView({ behavior: 'smooth' });
+    }
 
     return (
         <div className="typo" style={{
             marginTop: "0.1em",
             marginRight: "0.3em",
         }}>
-            <History contentType={contentType} canScroll={true} history={history} />
+            <History content={content} />
             <Operate
                 contentType={contentType}
-                changeContentType={changeContentType}
+                setContentType={setContentType}
                 wsStatus={ws.current && ws.current.readyState === 1}
-                bottomAnchor={bottomAnchor}
+                needUpdate={canUpdate}
+                jumpToTop={jumpToTop}
+                jumpToBottom={jumpToBottom}
             />
             <div ref={bottomAnchor} />
         </div>

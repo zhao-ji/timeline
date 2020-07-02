@@ -1,7 +1,4 @@
 import React from "react";
-import { CSSTransitionGroup } from 'react-transition-group';
-
-import checkIfMandarin from './utils';
 
 const Twit = ({ content }) => {
     return (
@@ -30,35 +27,20 @@ const Twit = ({ content }) => {
     );
 }
 
-export const History = ({ contentType, canScroll, history }) => {
-    let filteredHistory = [];
-    switch (contentType) {
-        case "All":
-            filteredHistory = history;
-            break;
-        case "Mandarin":
-            filteredHistory = history.filter(checkIfMandarin);
-            break;
-        case "English":
-            filteredHistory = history.filter(content => !checkIfMandarin(content));
-            break;
-        default:
-            break;
+export const History = ({ content }) => (
+    <>
+    {
+        content.map(twit => <Twit content={twit} key={twit} />)
     }
+    </>
+);
 
-    return (
-        <CSSTransitionGroup
-            transitionName="example"
-            transitionEnterTimeout={500}
-            transitionLeaveTimeout={300}>
-            {
-                filteredHistory.map(twit => <Twit content={twit} key={twit} />)
-            }
-        </CSSTransitionGroup>
-    );
-}
-
-export const Operate = ({ contentType, changeContentType, wsStatus, bottomAnchor }) => {
+export const Operate = ({
+    contentType, setContentType,
+    wsStatus,
+    needUpdate,
+    jumpToTop, jumpToBottom,
+}) => {
     return (
         <div style={{
             position: "fixed",
@@ -67,16 +49,16 @@ export const Operate = ({ contentType, changeContentType, wsStatus, bottomAnchor
             bottom: "5em",
             right: "3em",
         }}>
-            <Button onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}>
+            <Button onClick={jumpToTop} highlight={needUpdate}>
                 ↑
             </Button>
-            <Button onClick={() => changeContentType("All")} highlight={contentType === "All"}>
+            <Button onClick={() => setContentType("All")} highlight={contentType === "All"}>
                 All
             </Button>
-            <Button onClick={() => changeContentType("English")} highlight={contentType === "English"}>
+            <Button onClick={() => setContentType("English")} highlight={contentType === "English"}>
                 En
             </Button>
-            <Button onClick={() => changeContentType("Mandarin")} highlight={contentType === "Mandarin"}>
+            <Button onClick={() => setContentType("Mandarin")} highlight={contentType === "Mandarin"}>
                 汉
             </Button>
             <Button>
@@ -88,7 +70,7 @@ export const Operate = ({ contentType, changeContentType, wsStatus, bottomAnchor
                     backgroundColor: wsStatus ? "#6abe83" : "#f1ac9d",
                 }} />
             </Button>
-            <Button onClick={() => bottomAnchor.current.scrollIntoView({ behavior: 'smooth' })}>
+            <Button onClick={jumpToBottom}>
                 ↓
             </Button>
         </div>
@@ -99,7 +81,7 @@ const Button = ({ children, highlight, ...rest }) => (
     <button {...rest} style={{
         height: "20%",
         width: "2em",
-        webkitAppearance: "none",
+        WebkitAppearance: "none",
         backgroundColor: highlight ? "#6abe83" : "#dee2d1",
     }}>
         {children}

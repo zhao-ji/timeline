@@ -10,7 +10,6 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "react-transition-group": "1.x",
     "shopify-reconnecting-websocket": "^0.1.0"
   },
   "scripts": {
