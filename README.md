@@ -5,4 +5,3 @@
 ## TODO List
 
 - delete over stack tweet
-- flashing while new tweets coming

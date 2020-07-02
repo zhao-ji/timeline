@@ -5,6 +5,7 @@ import React, {
 } from "react";
 
 import ReconnectingWebSocket from 'shopify-reconnecting-websocket';
+import Elevator from'elevator.js';
 
 import {
     History,
@@ -19,7 +20,15 @@ const App = () => {
 
     const ws = useRef(null);
     const history = useRef([]);
-    const bottomAnchor = useRef(null);
+
+    const elevator = new Elevator({
+        duration: 5000,
+    });
+
+    const elevatorToBottom = new Elevator({
+        targetElement: document.querySelector('#elevator-bottom'),
+        duration: 5000,
+    });
 
     useEffect(() => {
         ws.current = new ReconnectingWebSocket(
@@ -55,11 +64,11 @@ const App = () => {
     function jumpToTop() {
         setContent(filterTweet(history.current, contentType));
         setCanUpdate(false);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        elevator.elevate();
     }
 
     function jumpToBottom() {
-        bottomAnchor.current.scrollIntoView({ behavior: 'smooth' });
+        elevatorToBottom.elevate();
     }
 
     return (
@@ -76,7 +85,7 @@ const App = () => {
                 jumpToTop={jumpToTop}
                 jumpToBottom={jumpToBottom}
             />
-            <div ref={bottomAnchor} />
+            <div id="elevator-bottom" />
         </div>
     );
 }
